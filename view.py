@@ -23,6 +23,7 @@ class Application:
         self.result_text = scrolledtext.ScrolledText(master, wrap=tk.WORD, width=60, height=20, font=font_style)
         self.result_text.pack(pady=10, padx=10)
         self.result_text.config(bg=background_color, fg=foreground_color, state='disabled')
+        self.result_text.tag_config('error', foreground='red')
 
     def analyze(self):
         data = self.input_text.get("1.0", tk.END)
@@ -30,7 +31,13 @@ class Application:
         self.result_text.configure(state='normal')
         self.result_text.delete('1.0', tk.END)
         for res in results:
-            self.result_text.insert(tk.END, str(res) + '\n')
+            
+            if res[0] == 'DESCONOCIDO':
+                
+                self.result_text.insert(tk.END, str(res) + '\n', 'error')
+            else:
+                self.result_text.insert(tk.END, str(res) + '\n')
+                
         self.result_text.configure(state='disabled')
 
 if __name__ == "__main__":

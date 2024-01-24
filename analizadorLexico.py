@@ -3,14 +3,13 @@ import ply.lex as lex
 class LexerAnalyzer:
     
     tokens = [
-        'VARIABLE', 'TIPO', 'PUNTO_Y_COMA',
-        'FUNCION', 'NOMBRE_FUNCION', 'ABRIR_CORCHETE', 'CERRAR_CORCHETE',
-        'ABRIR_LLAVES', 'CONTENIDO', 'CERRAR_LLAVES',
-        'CONDICIONAL', 'ABRIR_PARENTESIS', 'CERRAR_PARENTESIS', 'OPERADOR', 'NUMERO', 'CICLO', 'MAIN'
+        'IDENTIFICADORES', 'TIPO', 'SIGNOS',
+        'NOMBRE_FUNCION', 'ABRIR_CORCHETE', 'CERRAR_CORCHETE',
+        'ABRIR_LLAVES', 'PALABRA_RESERVADA', 'CERRAR_LLAVES',
+        'ABRIR_PARENTESIS', 'CERRAR_PARENTESIS', 'OPERADOR', 'NUMERO','ASIGNACION', 'DESCONOCIDO'
     ]
 
-    
-    t_PUNTO_Y_COMA = r';'
+    t_ASIGNACION = r'\='
     t_ABRIR_CORCHETE = r'\['
     t_CERRAR_CORCHETE = r'\]'
     t_ABRIR_LLAVES = r'\{'
@@ -18,27 +17,10 @@ class LexerAnalyzer:
     t_ABRIR_PARENTESIS = r'\('
     t_CERRAR_PARENTESIS = r'\)'
     t_TIPO = r'\bint\b|\bstring\b'
-    t_ignore = ' \t'
+    t_ignore = ' \t\n'
 
-    
-    def t_CONTENIDO(self, t):
-        r'contenido'
-        return t
-
-    def t_CONDICIONAL(self, t):
-        r'Vi'
-        return t
-
-    def t_CICLO(self, t):
-        r'War'
-        return t
-
-    def t_FUNCION(self, t):
-        r'Fun'
-        return t
-
-    def t_MAIN(self, t):
-        r'Malph'
+    def t_PALABRA_RESERVADA(self, t):
+        r'contenido|Vi|War|Fun|Malph'
         return t
 
     def t_NUMERO(self, t):
@@ -46,28 +28,28 @@ class LexerAnalyzer:
         t.value = int(t.value)
         return t
 
-    def t_OPERADOR(self, t):
-        r'[><=]'
+    def t_SIGNOS(self, t):
+        r'[><;]'
         return t
 
-    def t_NOMBRE_FUNCION(self, t):
-        r'[A-Z][a-zA-Z0-9]*'
-        return t
-
-    def t_VARIABLE(self, t):
+    def t_IDENTIFICADORES(self, t):
         r'[a-zA-Z_][a-zA-Z_0-9]*'
         return t
 
+    
 
     def t_error(self, t):
-        print(f"Illegal character '{t.value[0]}'")
-        t.lexer.skip(1)
-
-    
+        if t.value[0].isspace():  
+            self.lexer.skip(1)    
+        else:
+            print(f"Carácter desconocido '{t.value[0]}'")
+            t.type = 'DESCONOCIDO'  
+            t.value = t.value[0]    
+            self.lexer.skip(1)
+            return t 
     def __init__(self):
         self.lexer = lex.lex(module=self)
 
-    
     def analyze(self, data):
         self.lexer.input(data)
         result = []
@@ -77,3 +59,10 @@ class LexerAnalyzer:
                 break
             result.append((tok.type, tok.value))
         return result
+
+
+lexer_analyzer = LexerAnalyzer()
+input_data = "int x = 10; // Esto es un ejemplo con un + desconocido"
+result = lexer_analyzer.analyze(input_data)
+for token in result:
+    print(token)
