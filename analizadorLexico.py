@@ -4,18 +4,14 @@ class LexerAnalyzer:
     
     tokens = [
         'IDENTIFICADORES', 'TIPO', 'SIGNOS',
-        'NOMBRE_FUNCION', 'ABRIR_CORCHETE', 'CERRAR_CORCHETE',
-        'ABRIR_LLAVES', 'PALABRA_RESERVADA', 'CERRAR_LLAVES',
-        'ABRIR_PARENTESIS', 'CERRAR_PARENTESIS', 'OPERADOR', 'NUMERO','ASIGNACION', 'DESCONOCIDO'
+         'CORCHETES','LLAVES', 'PALABRA_RESERVADA',
+        'PARENTESIS', 'NUMERO','ASIGNACION', 'DESCONOCIDO'
     ]
 
     t_ASIGNACION = r'\='
-    t_ABRIR_CORCHETE = r'\['
-    t_CERRAR_CORCHETE = r'\]'
-    t_ABRIR_LLAVES = r'\{'
-    t_CERRAR_LLAVES = r'\}'
-    t_ABRIR_PARENTESIS = r'\('
-    t_CERRAR_PARENTESIS = r'\)'
+    t_CORCHETES = r'\[|\]'
+    t_LLAVES = r'\{|\}'
+    t_PARENTESIS = r'\(|\)'
     t_TIPO = r'\bint\b|\bstring\b'
     t_ignore = ' \t\n'
 
